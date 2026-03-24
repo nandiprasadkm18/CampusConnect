@@ -14,10 +14,22 @@ const notificationSchema = new mongoose.Schema(
     link: { // e.g., /events/cse
       type: String,
     },
+    type: { 
+      type: String, 
+      enum: ['standard', 'team_invitation'], 
+      default: 'standard' 
+    },
+    data: { 
+      type: mongoose.Schema.Types.Mixed 
+    },
     read: {
       type: Boolean,
       required: true,
       default: false,
+    },
+    responded: {
+      type: Boolean,
+      default: false
     },
   },
   { timestamps: true }

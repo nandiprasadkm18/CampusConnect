@@ -1,31 +1,18 @@
 import React from 'react';
+import { motion } from 'framer-motion';
 import MyProfile from '../components/MyProfile.jsx';
-
-// Styles
-const pageContainerStyle = {
-  display: 'flex',
-  justifyContent: 'center',
-  paddingTop: '3rem',
-};
-
-const formContainerStyle = {
-  border: '1px solid var(--color-border)',
-  padding: '2.5rem', // A bit more padding
-  borderRadius: '8px',
-  backgroundColor: 'var(--color-bg-white)',
-  width: '600px', // A bit wider
-  maxWidth: '90%',
-  boxShadow: '0 4px 12px rgba(0,0,0,0.05)', 
-  opacity: 0, 
-  animation: 'fadeInUp 0.7s ease-out 0.5s forwards', 
-};
 
 const MyProfilePage = () => {
   return (
-    <div style={pageContainerStyle}>
-      <div style={formContainerStyle}>
+    <div className="min-h-[80vh] flex items-start justify-center py-16 px-6">
+      <motion.div 
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+        className="w-full max-w-4xl bg-white border border-slate-100 rounded-[3rem] p-10 md:p-20 shadow-2xl shadow-slate-200/40"
+      >
         <MyProfile />
-      </div>
+      </motion.div>
     </div>
   );
 };

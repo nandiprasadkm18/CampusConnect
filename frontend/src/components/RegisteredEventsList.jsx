@@ -1,120 +1,26 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Calendar, MapPin, User, CheckCircle, MessageSquare, Star, BookOpen, Clock, QrCode } from 'lucide-react';
+import FeedbackModal from './FeedbackModal';
 
 const API_URL = 'http://localhost:5000/api/events/myevents';
-const FEEDBACK_URL = 'http://localhost:5000/api/events';
-
-// --- NEW "EDUCROWN" STYLES ---
-const eventCardStyle = {
-  border: '1px solid var(--color-border)',
-  borderRadius: '8px',
-  padding: '1.5rem',
-  margin: '1rem 0',
-  backgroundColor: 'var(--color-bg-white)',
-  boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
-};
-const eventTitleStyle = {
-  color: 'var(--educrown-blue-dark)',
-  margin: '0 0 0.5rem 0',
-};
-const feedbackButtonStyle = {
-  padding: '0.5rem 1rem',
-  fontSize: '0.9rem',
-  backgroundColor: 'var(--color-success)',
-  color: 'var(--color-bg-white)',
-  border: 'none',
-  fontFamily: "inherit",
-  cursor: 'pointer',
-  marginTop: '1rem',
-  borderRadius: '8px',
-  fontWeight: 'bold',
-};
-const feedbackFormStyle = {
-  marginTop: '1rem',
-  borderTop: '1px dashed var(--color-border)',
-  paddingTop: '1rem',
-};
-const inputStyle = {
-  padding: '0.75rem',
-  fontSize: '1rem',
-  backgroundColor: 'var(--color-bg-light)',
-  border: '1px solid var(--color-border)',
-  color: 'var(--color-text-dark)',
-  borderRadius: '4px',
-  fontFamily: "inherit",
-  width: '100%', 
-  boxSizing: 'border-box', 
-  marginTop: '0.5rem',
-};
-// --- END STYLES ---
-
-// --- FEEDBACK COMPONENT ---
-const FeedbackForm = ({ eventId, setEvents }) => {
-  const [rating, setRating] = useState(5);
-  const [comment, setComment] = useState('');
-  const [error, setError] = useState('');
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError('');
-    try {
-      const userInfo = JSON.parse(localStorage.getItem('user'));
-      const config = { headers: { Authorization: `Bearer ${userInfo.token}` } };
-      
-      await axios.post(`${FEEDBACK_URL}/${eventId}/feedback`, { rating, comment }, config);
-      
-      // Refresh the events list to hide the form
-      const { data } = await axios.get(API_URL, config);
-      setEvents(data);
-      
-    } catch (err) {
-      setError(err.response?.data?.message || 'Failed to submit feedback');
-    }
-  };
-
-  return (
-    <form style={feedbackFormStyle} onSubmit={handleSubmit}>
-      <h4 style={{color: 'var(--educrown-blue-dark)', margin: 0}}>Leave Feedback</h4>
-      {error && <p style={{color: 'var(--color-danger)'}}>{error}</p>}
-      <div>
-        <label style={{color: 'var(--color-text-light)', fontSize: '0.9rem'}}>Rating (1-5):</label>
-        <select style={inputStyle} value={rating} onChange={(e) => setRating(e.target.value)}>
-          <option value={5}>5 - Excellent</option>
-          <option value={4}>4 - Good</option>
-          <option value={3}>3 - Average</option>
-          <option value={2}>2 - Poor</option>
-          <option value={1}>1 - Bad</option>
-        </select>
-      </div>
-      <div>
-        <label style={{color: 'var(--color-text-light)', fontSize: '0.9rem', marginTop: '1rem', display: 'block'}}>Comment:</label>
-        <textarea
-          style={{...inputStyle, height: '80px'}}
-          value={comment}
-          onChange={(e) => setComment(e.target.value)}
-          placeholder="What did you think?"
-        />
-      </div>
-      <button type="submit" style={{...feedbackButtonStyle, marginTop: '1rem'}}>Submit Feedback</button>
-    </form>
-  );
-};
-// --- END FEEDBACK COMPONENT ---
-
 
 const RegisteredEventsList = () => {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [userInfo, setUserInfo] = useState(null);
+  const [selectedEvent, setSelectedEvent] = useState(null);
+  const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);
 
   const fetchMyEvents = async () => {
     try {
       const storedUser = JSON.parse(localStorage.getItem('user'));
       if (!storedUser || !storedUser.token) {
-         setError('You must be logged in to see your events.');
-         setLoading(false);
-         return;
+        setError('Session synchronization required.');
+        setLoading(false);
+        return;
       }
       setUserInfo(storedUser);
 
@@ -122,7 +28,7 @@ const RegisteredEventsList = () => {
       const { data } = await axios.get(API_URL, config);
       setEvents(data);
     } catch (err) {
-      setError(err.response?.data?.message || 'Failed to fetch events');
+      setError(err.response?.data?.message || 'Academic record retrieval failed');
     } finally {
       setLoading(false);
     }
@@ -132,47 +38,140 @@ const RegisteredEventsList = () => {
     fetchMyEvents();
   }, []);
 
-  if (loading) return <p>Loading your events...</p>;
-  if (error) return <p style={{ color: 'var(--color-danger)' }}>{error}</p>;
+  if (loading) return (
+    <div className="flex flex-col items-center justify-center py-20 animate-pulse">
+      <div className="w-12 h-12 border-4 border-slate-100 border-t-slate-900 rounded-full animate-spin mb-4" />
+      <p className="text-slate-500 font-serif font-medium text-lg">Retrieving academic engagements...</p>
+    </div>
+  );
+
+  if (error) return (
+    <div className="p-8 rounded-3xl bg-red-50 border border-red-100 text-red-700 font-serif font-medium text-center max-w-lg mx-auto my-12">
+      {error}
+    </div>
+  );
 
   return (
-    <div>
-      <h2 style={{color: 'var(--educrown-blue-dark)'}}>My Registered Events</h2>
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 font-serif">
+      <div className="mb-12">
+        <h1 className="text-4xl font-extrabold text-slate-900 tracking-tight uppercase">Confirmed Engagements</h1>
+        <p className="text-slate-500 mt-2 font-medium text-lg border-l-4 border-slate-900 pl-4 ml-1">Official repository of registered university events.</p>
+      </div>
+
       {events.length === 0 ? (
-        <p>You have not registered for any events yet.</p>
+        <div className="text-center py-24 bg-slate-50 rounded-[3rem] border border-slate-200">
+           <BookOpen className="w-12 h-12 text-slate-300 mx-auto mb-5" />
+           <p className="text-slate-500 font-bold text-xl uppercase tracking-widest">No Active Registrations</p>
+           <p className="text-slate-400 mt-2">Consult the campus calendar for upcoming sessions.</p>
+        </div>
       ) : (
-        events.map((event) => {
-          const isPast = new Date(event.date) < new Date();
-          // --- THIS IS THE LOGIC FIX (from your file) ---
-          // Check if the feedback array contains an object where the user._id matches
-          const hasGivenFeedback = event.feedback.some(fb => fb.user === userInfo?._id || fb.user?._id === userInfo?._id);
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+          <AnimatePresence>
+            {events.map((event, index) => {
+              const dateObj = new Date(event.date);
+              const isPast = dateObj < new Date();
+              const hasGivenFeedback = event.feedback.some(fb => fb.user?._id === userInfo?._id || fb.user === userInfo?._id);
 
-          return (
-            <div key={event._id} style={eventCardStyle}>
-              <h3 style={eventTitleStyle}>{event.title}</h3>
-              <p>
-                <strong>Date:</strong> {new Date(event.date).toLocaleDateString()}
-              </p>
-              <p>
-                <strong>Location:</strong> {event.location}
-              </p>
-              <p>{event.description}</p>
-              <small>Posted by: {event.creator?.username || 'Unknown'}</small>
+              return (
+                <motion.div
+                  layout
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: index * 0.1 }}
+                  key={event._id}
+                  className="bg-white rounded-[2.5rem] border border-slate-100 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.05)] overflow-hidden flex flex-col group hover:shadow-[0_20px_40px_-10px_rgba(0,0,0,0.06)] transition-all duration-500"
+                >
+                  <div className="p-10 flex-1">
+                    <div className="flex items-center justify-between mb-8">
+                      <div className="px-5 py-2 rounded-2xl bg-slate-900 text-white text-[10px] font-bold uppercase tracking-[0.2em] shadow-sm">
+                        {event.branch}
+                      </div>
+                      <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${isPast ? 'bg-slate-100 text-slate-400' : 'bg-slate-50 text-slate-900 border border-slate-200'}`}>
+                        {isPast ? 'COMPLETED' : 'STATUS: CONFIRMED'}
+                      </div>
+                    </div>
 
-              {/* --- FEEDBACK FEATURE --- */}
-              {isPast && !hasGivenFeedback && (
-                <FeedbackForm eventId={event._id} setEvents={setEvents} />
-              )}
-              {isPast && hasGivenFeedback && (
-                <p style={{color: 'var(--color-success)', fontStyle: 'italic', marginTop: '1rem'}}>Thanks for your feedback!</p>
-              )}
-              {/* --- END FEATURE --- */}
-            </div>
-          )
-        })
+                    <h3 className="text-2xl font-bold text-slate-900 leading-tight mb-6 uppercase tracking-tight group-hover:text-black transition-colors">
+                      {event.title}
+                    </h3>
+                    
+                    <div className="grid grid-cols-1 gap-5 mb-8">
+                      <div className="flex items-center gap-4 text-slate-600 font-medium bg-slate-50/50 p-4 rounded-2xl border border-slate-100/50">
+                        <Clock className="w-5 h-5 text-slate-400" />
+                        <span className="text-sm font-bold uppercase tracking-widest">{dateObj.toLocaleDateString(undefined, { dateStyle: 'full' })}</span>
+                      </div>
+                      <div className="flex items-center gap-4 text-slate-600 font-medium bg-slate-50/50 p-4 rounded-2xl border border-slate-100/50">
+                        <MapPin className="w-5 h-5 text-slate-400" />
+                        <span className="text-sm font-bold truncate uppercase tracking-widest">{event.location}</span>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-3 text-slate-400 border-t border-slate-50 pt-8 mt-4 group-hover:text-slate-600 transition-colors">
+                      <User className="w-4 h-4" />
+                      <span className="text-[10px] font-bold uppercase tracking-[0.2em]">Authorized by {event.creator?.username || 'Administration'}</span>
+                    </div>
+                  </div>
+
+                  <div className="bg-slate-50/30 p-10 border-t border-slate-100">
+                    {!isPast && (
+                      <div className="space-y-4">
+                        <div className="flex items-center justify-center gap-3 text-slate-900 font-bold uppercase text-[10px] tracking-[0.2em] bg-white py-4 rounded-2xl border border-slate-200">
+                          {event.attended ? (
+                             <CheckCircle className="w-5 h-5 text-emerald-500" />
+                          ) : (
+                             <QrCode className="w-5 h-5 text-slate-400" />
+                          )}
+                          <span>{event.attended ? 'Attendance Verified' : 'Standard Entry Pass'}</span>
+                        </div>
+
+                        {!event.attended && (
+                          <div className="py-4 text-center">
+                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em]">Scan Admin QR at venue to mark attendance</p>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                    
+                    {event.feedbackOpened && !hasGivenFeedback && (
+                      <button
+                        onClick={() => {
+                          setSelectedEvent(event);
+                          setIsFeedbackModalOpen(true);
+                        }}
+                        className="w-full py-4 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-[10px] uppercase tracking-[0.2em] rounded-2xl transition-all shadow-lg shadow-indigo-600/20 flex items-center justify-center gap-2"
+                      >
+                        <MessageSquare className="w-4 h-4" />
+                        Give Feedback
+                      </button>
+                    )}
+                    
+                    {hasGivenFeedback && (
+                      <div className="flex flex-col items-center justify-center p-8 bg-white border border-slate-100 rounded-3xl shadow-sm text-slate-500 font-medium border-t-4 border-t-slate-900">
+                        <div className="p-3 bg-slate-900 rounded-full mb-4 text-white">
+                           <Star className="w-6 h-6 fill-white" />
+                        </div>
+                        <p className="text-xs uppercase tracking-widest font-bold">Formal Feedback Archived</p>
+                      </div>
+                    )}
+                  </div>
+                </motion.div>
+              )
+            })}
+          </AnimatePresence>
+
+          {selectedEvent && (
+            <FeedbackModal
+              isOpen={isFeedbackModalOpen}
+              onClose={() => setIsFeedbackModalOpen(false)}
+              session={selectedEvent}
+              type="events"
+              onFeedbackSubmitted={fetchMyEvents}
+            />
+          )}
+        </div>
       )}
     </div>
   );
 };
 
-export default RegisteredEventsList;
+export default RegisteredEventsList;

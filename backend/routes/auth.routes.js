@@ -1,27 +1,35 @@
 import express from 'express';
 import User from '../models/user.model.js';
-import jwt from 'jsonwebtoken';
+import generateToken from '../utils/generateToken.js';
+import { rateLimit } from 'express-rate-limit';
 
 const router = express.Router();
 
-// Helper function to generate token
-const generateToken = (id) => {
-  return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: '30d' });
-};
+const authLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000, // 1 hour
+  max: 10, // 10 attempts
+  message: 'Too many authentication attempts, please try again after an hour',
+  standardHeaders: true,
+  legacyHeaders: false,
+});
 
 // @route   POST /api/auth/register
 // @desc    Register a new user
-router.post('/register', async (req, res) => {
-  // --- 1. GET ALL THE NEW FIELDS FROM THE REQUEST ---
+router.post('/register', authLimiter, async (req, res) => {
   const { 
-    username, 
+    username,
+    fullName,
     email, 
     password,
     usn,
     branch,
     year,
-    semester
+    semester,
+    role,        // New: Accept role from client
+    secretCode   // New: Secret code for admin
   } = req.body;
+
+  const finalUsername = username || fullName || email.split('@')[0];
 
   try {
     const userExists = await User.findOne({ email });
@@ -29,8 +37,18 @@ router.post('/register', async (req, res) => {
       return res.status(400).json({ message: 'User already exists' });
     }
     
-    // Optional: Check if USN already exists
-    if (usn) {
+    // Role validation
+    let finalRole = 'user';
+    if (role === 'admin') {
+      if (secretCode === 'NP18') {
+        finalRole = 'admin';
+      } else {
+        return res.status(403).json({ message: 'Invalid administrative secret code' });
+      }
+    }
+
+    // Optional: Check if USN already exists (only for students)
+    if (finalRole === 'user' && usn) {
       const usnExists = await User.findOne({ 'profile.usn': usn });
       if (usnExists) {
         return res.status(400).json({ message: 'USN already registered' });
@@ -39,15 +57,16 @@ router.post('/register', async (req, res) => {
 
     // --- 2. CREATE THE USER WITH THE FULL PROFILE ---
     const user = await User.create({
-      username,
+      username: finalUsername,
       email,
       password,
+      role: finalRole, // Set the validated role
       profile: {
-        fullName: username, // Default fullName to username
-        usn,
-        branch,
-        year,
-        semester
+        fullName: fullName || finalUsername,
+        usn: finalRole === 'admin' ? `ADM-${email.split('@')[0]}` : usn,
+        branch: finalRole === 'admin' ? 'MANAGEMENT' : branch,
+        year: finalRole === 'admin' ? 'N/A' : year,
+        semester: finalRole === 'admin' ? 'N/A' : semester
       }
     });
     // --- END CHANGE ---
@@ -67,7 +86,7 @@ router.post('/register', async (req, res) => {
 
 // @route   POST /api/auth/login
 // @desc    Authenticate user & get token
-router.post('/login', async (req, res) => {
+router.post('/login', authLimiter, async (req, res) => {
   const { email, password } = req.body;
   try {
     const user = await User.findOne({ email });

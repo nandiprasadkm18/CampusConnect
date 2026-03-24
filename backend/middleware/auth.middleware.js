@@ -25,7 +25,10 @@ const protect = async (req, res, next) => {
       
       next(); // Move on to the next function (e.g., the route handler)
     } catch (error) {
-      console.error(error);
+      console.error('Auth Middleware Error:', error.message);
+      if (error.name === 'TokenExpiredError') {
+        return res.status(401).json({ message: 'Token expired, please log in again' });
+      }
       return res.status(401).json({ message: 'Not authorized, token failed' });
     }
   }

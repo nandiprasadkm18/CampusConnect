@@ -38,6 +38,9 @@ const userSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+// Indexes for performance
+userSchema.index({ 'profile.branch': 1 });
+
 // ... (rest of the file is unchanged) ...
 userSchema.pre('save', async function (next) {
   if (!this.isModified('password')) {

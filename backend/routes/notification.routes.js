@@ -86,6 +86,18 @@ router.post('/broadcast', protect, admin, async (req, res) => {
   }
 });
 
+// @route   DELETE /api/notifications/clearall
+// @desc    Clear all notifications for the logged-in user
+// @access  Private
+router.delete('/clearall', protect, async (req, res) => {
+  try {
+    await Notification.deleteMany({ user: req.user._id });
+    res.json({ message: 'Notifications cleared successfully' });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error during clearing notifications' });
+  }
+});
+
 // @route   DELETE /api/notifications/:id
 // @desc    Delete a notification by ID
 // @access  Private/Admin

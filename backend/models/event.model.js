@@ -34,6 +34,12 @@ const eventSchema = new mongoose.Schema(
       ],
       default: 'general',
     },
+    category: {
+      type: String,
+      required: true,
+      enum: ['technical', 'cultural', 'sports', 'seminar', 'workshop', 'competition', 'other'],
+      default: 'technical',
+    },
     creator: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
@@ -41,11 +47,53 @@ const eventSchema = new mongoose.Schema(
     },
     attendees: [
       {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
+        user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+        qrToken: { type: String, unique: true, sparse: true },
+        fullName: { type: String },
+        usn: { type: String },
+        manualEntry: { type: Boolean, default: false },
+        attended: { type: Boolean, default: false },
+        attendedAt: { type: Date },
+        registeredAt: { type: Date, default: Date.now },
+        groupId: { type: String },
+        isGroupLeader: { type: Boolean, default: false },
+        paymentScreenshot: { type: String, default: '' },
+        paymentStatus: { type: String, enum: ['pending', 'verified', 'rejected', 'n/a'], default: 'n/a' },
+        invitationStatus: { type: String, enum: ['accepted', 'pending', 'declined'], default: 'accepted' },
       },
     ],
-    // --- ADD THIS ---
+    capacity: {
+      type: Number,
+      default: 100,
+    },
+    maxGroupSize: {
+      type: Number,
+      default: 1,
+    },
+    banner: {
+      type: String,
+      default: '', // Cloudinary URL
+    },
+    isPaid: {
+      type: Boolean,
+      default: false,
+    },
+    fee: {
+      type: Number,
+      default: 0,
+    },
+    paymentQR: {
+      type: String,
+      default: '', // Cloudinary URL
+    },
+    whatsappLink: {
+      type: String,
+      default: '',
+    },
+    feedbackOpened: {
+      type: Boolean,
+      default: false,
+    },
     feedback: [
       {
         user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
@@ -54,10 +102,13 @@ const eventSchema = new mongoose.Schema(
         createdAt: { type: Date, default: Date.now }
       }
     ]
-    // --- END ADD ---
   },
   { timestamps: true }
 );
+
+eventSchema.index({ date: 1 });
+eventSchema.index({ branch: 1 });
+eventSchema.index({ category: 1 });
 
 const Event = mongoose.model('Event', eventSchema);
 export default Event;
