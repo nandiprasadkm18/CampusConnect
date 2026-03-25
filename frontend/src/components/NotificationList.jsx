@@ -1,10 +1,11 @@
+import API_BASE_URL from '../config/api.js';
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Bell, Trash2, Check, Clock, User, ShieldAlert, MailOpen, BellOff } from 'lucide-react';
 
-const USER_API_URL = 'http://localhost:5000/api/notifications';
-const ADMIN_API_URL = 'http://localhost:5000/api/notifications/admin/all';
+const USER_API_URL = `${API_BASE_URL}/api/notifications`;
+const ADMIN_API_URL = `${API_BASE_URL}/api/notifications/admin/all`;
 
 const NotificationList = () => {
   const [notifications, setNotifications] = useState([]);
@@ -69,8 +70,8 @@ const NotificationList = () => {
       const config = { headers: { Authorization: `Bearer ${userInfo.token}` } };
       
       const endpoint = type === 'event' 
-        ? `http://localhost:5000/api/events/${sessionId}/respond-invitation`
-        : `http://localhost:5000/api/workshops/${sessionId}/respond-invitation`;
+        ? `${API_BASE_URL}/api/events/${sessionId}/respond-invitation`
+        : `${API_BASE_URL}/api/workshops/${sessionId}/respond-invitation`;
         
       await axios.post(endpoint, { accept }, config);
       

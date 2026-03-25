@@ -1,3 +1,4 @@
+import API_BASE_URL from '../config/api.js';
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -19,7 +20,7 @@ const QRScanner = ({ type = 'events' }) => {
         const userInfo = JSON.parse(localStorage.getItem('user'));
         if (!userInfo) return;
         const config = { headers: { Authorization: `Bearer ${userInfo.token}` } };
-        const endpoint = `http://localhost:5000/api/${type}`;
+        const endpoint = `${API_BASE_URL}/api/${type}`;
         const { data } = await axios.get(endpoint, config);
         const list = type === 'events' ? data.events : data.workshops;
         setItems(list || []);

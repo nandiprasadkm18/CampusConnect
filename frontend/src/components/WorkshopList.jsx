@@ -1,3 +1,4 @@
+import API_BASE_URL from '../config/api.js';
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -6,7 +7,7 @@ import AttendeeListModal from './AttendeeListModal.jsx';
 import GroupRegistrationModal from './GroupRegistrationModal.jsx';
 import Skeleton from './ui/Skeleton.jsx';
 
-const API_URL = 'http://localhost:5000/api/workshops';
+const API_URL = `${API_BASE_URL}/api/workshops`;
 
 const WorkshopList = () => {
   const [workshops, setWorkshops] = useState([]);
@@ -56,7 +57,7 @@ const WorkshopList = () => {
 
     try {
       const config = { headers: { Authorization: `Bearer ${userInfo.token}` } };
-      await axios.post(`http://localhost:5000/api/workshops/${workshopId}/register`, {}, config);
+      await axios.post(`${API_BASE_URL}/api/workshops/${workshopId}/register`, {}, config);
       setRegisterStatus(prev => ({ ...prev, [workshopId]: 'Success!' }));
       fetchWorkshops();
     } catch (err) {
@@ -69,7 +70,7 @@ const WorkshopList = () => {
     if (!window.confirm('Are you sure you want to delete this workshop?')) return;
     try {
       const config = { headers: { Authorization: `Bearer ${userInfo.token}` } };
-      await axios.delete(`http://localhost:5000/api/workshops/${workshopId}`, config);
+      await axios.delete(`${API_BASE_URL}/api/workshops/${workshopId}`, config);
       setWorkshops(prev => prev.filter(w => w._id !== workshopId));
     } catch (err) {
       alert(err.response?.data?.message || 'Failed to delete workshop');
@@ -78,7 +79,7 @@ const WorkshopList = () => {
 
   const handleToggleFeedback = async (id) => {
     try {
-      await axios.post(`http://localhost:5000/api/workshops/${id}/toggle-feedback`, {}, {
+      await axios.post(`${API_BASE_URL}/api/workshops/${id}/toggle-feedback`, {}, {
         headers: { Authorization: `Bearer ${userInfo.token}` }
       });
       fetchWorkshops();

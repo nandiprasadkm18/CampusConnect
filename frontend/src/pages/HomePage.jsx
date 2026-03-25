@@ -1,3 +1,4 @@
+import API_BASE_URL from '../config/api.js';
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
@@ -360,7 +361,7 @@ const HomePage = () => {
           // Only fetch analytics for admins
           if (parsedUser.role === 'admin') {
             const config = { headers: { Authorization: `Bearer ${parsedUser.token}` } };
-            const { data } = await axios.get('http://localhost:5000/api/analytics/overview', config);
+            const { data } = await axios.get(`${API_BASE_URL}/api/analytics/overview`, config);
             setStats(data);
           }
         }

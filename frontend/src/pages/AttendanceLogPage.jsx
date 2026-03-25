@@ -1,3 +1,4 @@
+import API_BASE_URL from '../config/api.js';
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -18,7 +19,7 @@ const AttendanceLogPage = () => {
   useEffect(() => {
     const fetchSession = async () => {
       try {
-        const { data } = await axios.get(`http://localhost:5000/api/${type}/${id}/public`);
+        const { data } = await axios.get(`${API_BASE_URL}/api/${type}/${id}/public`);
         setSession(data);
       } catch (err) {
         setStatus('error');
@@ -44,7 +45,7 @@ const AttendanceLogPage = () => {
 
     setStatus('submitting');
     try {
-      const { data } = await axios.post(`http://localhost:5000/api/${type}/${id}/self-mark`, { name, usn });
+      const { data } = await axios.post(`${API_BASE_URL}/api/${type}/${id}/self-mark`, { name, usn });
       setStatus('success');
       setMessage(data.message);
     } catch (err) {

@@ -1,3 +1,4 @@
+import API_BASE_URL from './config/api.js';
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Routes, Route, Link, useNavigate, useLocation, NavLink } from 'react-router-dom';
@@ -73,7 +74,7 @@ function App() {
       const fetchUnreadCount = async () => {
         try {
           const config = { headers: { Authorization: `Bearer ${parsedUser.token}` } };
-          const { data } = await axios.get('http://localhost:5000/api/notifications', config);
+          const { data } = await axios.get(`${API_BASE_URL}/api/notifications`, config);
           setUnreadCount(data.filter(n => !n.read).length);
         } catch (err) {
           console.error('Failed to fetch unread count', err);
@@ -83,7 +84,7 @@ function App() {
     }
 
     // Initialize Socket.io
-    const socket = io('http://localhost:5000');
+    const socket = io(`${API_BASE_URL}`);
     
     socket.on('new_event', (event) => {
       setToast({ message: `New Event: ${event.title}`, type: 'event' });

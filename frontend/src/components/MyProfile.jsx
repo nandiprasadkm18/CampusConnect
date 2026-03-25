@@ -1,9 +1,10 @@
+import API_BASE_URL from '../config/api.js';
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { motion, AnimatePresence } from 'framer-motion';
 import { User, Mail, ShieldCheck, GraduationCap, Calendar, BookOpen, Fingerprint } from 'lucide-react';
 
-const API_URL_GET = 'http://localhost:5000/api/users/profile';
+const API_URL_GET = `${API_BASE_URL}/api/users/profile`;
 
 const ProfileItem = ({ icon: Icon, label, value, delay }) => (
   <motion.div

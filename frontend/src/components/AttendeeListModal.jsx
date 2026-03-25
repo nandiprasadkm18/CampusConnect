@@ -1,3 +1,4 @@
+import API_BASE_URL from '../config/api.js';
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, User, Hash, CheckCircle, Info, Users, Clock, ChevronDown, ChevronUp, UserPlus, Eye, AlertCircle, XCircle, Check, Star, MessageSquare } from 'lucide-react';
@@ -17,7 +18,7 @@ const AttendeeListModal = ({ isOpen, onClose, attendees = [], feedback = [], ses
     try {
       const userInfo = JSON.parse(localStorage.getItem('user'));
       const config = { headers: { Authorization: `Bearer ${userInfo.token}` } };
-      await axios.post(`http://localhost:5000/api/${type}/${sessionId}/attendees/${attendeeId}/verify-payment`, {}, config);
+      await axios.post(`${API_BASE_URL}/api/${type}/${sessionId}/attendees/${attendeeId}/verify-payment`, {}, config);
       if (onUpdate) onUpdate();
     } catch (err) {
       alert(err.response?.data?.message || 'Approval failed');

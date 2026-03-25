@@ -1,3 +1,4 @@
+import API_BASE_URL from '../config/api.js';
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
@@ -5,7 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Calendar, MapPin, User, CheckCircle, ExternalLink, Users, ChevronLeft, Clock } from 'lucide-react';
 import AttendeeListModal from './AttendeeListModal.jsx';
 
-const API_URL = 'http://localhost:5000/api/events/branch';
+const API_URL = `${API_BASE_URL}/api/events/branch`;
 
 const BranchEventsList = ({ branchName }) => {
   const [events, setEvents] = useState([]);
@@ -41,7 +42,7 @@ const BranchEventsList = ({ branchName }) => {
     if (registerStatus[eventId]) return;
     try {
       const config = { headers: { Authorization: `Bearer ${userInfo.token}` } };
-      await axios.post(`http://localhost:5000/api/events/${eventId}/register`, {}, config);
+      await axios.post(`${API_BASE_URL}/api/events/${eventId}/register`, {}, config);
       setRegisterStatus((prev) => ({ ...prev, [eventId]: 'Success!' }));
       fetchBranchEvents();
     } catch (err) {

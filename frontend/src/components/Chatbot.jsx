@@ -1,3 +1,4 @@
+import API_BASE_URL from '../config/api.js';
 import React, { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
 
@@ -44,7 +45,7 @@ const Chatbot = () => {
                 content: m.text
             })).concat({ role: 'user', content: userText });
 
-            const { data } = await axios.post('http://localhost:5000/api/chatbot/chat', { messages: history }, config);
+            const { data } = await axios.post(`${API_BASE_URL}/api/chatbot/chat`, { messages: history }, config);
             
             setMessages((prev) => [...prev, { text: data.content, sender: 'bot' }]);
         } catch (error) {

@@ -1,3 +1,4 @@
+import API_BASE_URL from '../config/api.js';
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { motion } from 'framer-motion';
@@ -83,7 +84,7 @@ const ActivityPage = () => {
         if (!userInfo || !userInfo.token) return;
         
         const config = { headers: { Authorization: `Bearer ${userInfo.token}` } };
-        const { data } = await axios.get('http://localhost:5000/api/analytics/activity', config);
+        const { data } = await axios.get(`${API_BASE_URL}/api/analytics/activity`, config);
         setActivities(data);
         setFilteredActivities(data);
       } catch (err) {

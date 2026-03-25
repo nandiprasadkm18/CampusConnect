@@ -1,3 +1,4 @@
+import API_BASE_URL from '../config/api.js';
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { 
@@ -20,7 +21,7 @@ const AnalyticsDashboard = () => {
         if (!userInfo || !userInfo.token) return;
         
         const config = { headers: { Authorization: `Bearer ${userInfo.token}` } };
-        const { data } = await axios.get('http://localhost:5000/api/analytics/overview', config);
+        const { data } = await axios.get(`${API_BASE_URL}/api/analytics/overview`, config);
         setData(data);
       } catch (err) {
         console.error("Failed to fetch analytics", err);

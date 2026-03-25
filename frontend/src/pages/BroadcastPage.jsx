@@ -1,9 +1,10 @@
+import API_BASE_URL from '../config/api.js';
 import React, { useState } from 'react';
 import axios from 'axios';
 import { motion } from 'framer-motion';
 import { Megaphone, Send, AlertCircle, CheckCircle, Info } from 'lucide-react';
 
-const API_URL = 'http://localhost:5000/api/notifications/broadcast';
+const API_URL = `${API_BASE_URL}/api/notifications/broadcast`;
 
 const BroadcastPage = () => {
   const [message, setMessage] = useState('');

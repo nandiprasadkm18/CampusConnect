@@ -1,3 +1,4 @@
+import API_BASE_URL from '../config/api.js';
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Star, MessageSquare, Send, CheckCircle, AlertCircle, Loader2 } from 'lucide-react';
@@ -29,7 +30,7 @@ const FeedbackModal = ({ isOpen, onClose, session, type, onFeedbackSubmitted }) 
         headers: { Authorization: `Bearer ${userInfo.token}` }
       };
 
-      await axios.post(`http://localhost:5000/api/${type}/${session._id}/feedback`, {
+      await axios.post(`${API_BASE_URL}/api/${type}/${session._id}/feedback`, {
         rating,
         comment
       }, config);

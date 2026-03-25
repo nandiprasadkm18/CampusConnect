@@ -1,10 +1,11 @@
+import API_BASE_URL from '../config/api.js';
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Calendar, MapPin, User, CheckCircle, MessageSquare, Star, BookOpen, QrCode } from 'lucide-react';
 import FeedbackModal from './FeedbackModal';
 
-const API_URL = 'http://localhost:5000/api/workshops/myworkshops';
+const API_URL = `${API_BASE_URL}/api/workshops/myworkshops`;
 
 const RegisteredWorkshopsList = () => {
   const [workshops, setWorkshops] = useState([]);

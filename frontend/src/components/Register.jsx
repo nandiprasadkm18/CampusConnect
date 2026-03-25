@@ -1,9 +1,10 @@
+import API_BASE_URL from '../config/api.js';
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { motion } from 'framer-motion';
 import { User, Mail, Lock, ShieldCheck, GraduationCap, Calendar, BookOpen, ArrowRight } from 'lucide-react';
 
-const API_URL = 'http://localhost:5000/api/auth';
+const API_URL = `${API_BASE_URL}/api/auth`;
 const branches = ['cse', 'ise', 'aiml', 'ec', 'eee', 'civil', 'mechanical'];
 const years = ['1', '2', '3', '4'];
 const semesterMap = {

@@ -1,3 +1,4 @@
+import API_BASE_URL from '../config/api.js';
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Users, UserPlus, UserMinus, ShieldCheck, User, CheckCircle, AlertCircle, Loader2, CreditCard, Image as ImageIcon, Check } from 'lucide-react';
@@ -66,7 +67,7 @@ const GroupRegistrationModal = ({ isOpen, onClose, event, userInfo, onRegisterSu
         formData.append('paymentScreenshot', paymentScreenshot);
       }
 
-      await axios.post(`http://localhost:5000/api/${type}/${event._id}/register`, formData, config);
+      await axios.post(`${API_BASE_URL}/api/${type}/${event._id}/register`, formData, config);
       setIsSuccess(true);
       onRegisterSuccess(event._id, type);
     } catch (err) {

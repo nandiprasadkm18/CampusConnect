@@ -1,3 +1,4 @@
+import API_BASE_URL from '../config/api.js';
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { motion } from 'framer-motion';
@@ -14,7 +15,7 @@ const Recommendations = () => {
                 const userInfo = JSON.parse(localStorage.getItem('user'));
                 if (!userInfo) return;
                 const config = { headers: { Authorization: `Bearer ${userInfo.token}` } };
-                const { data } = await axios.get('http://localhost:5000/api/events/recommendations', config);
+                const { data } = await axios.get(`${API_BASE_URL}/api/events/recommendations`, config);
                 setEvents(data);
             } catch (err) {
                 console.error("Failed to fetch recommendations", err);

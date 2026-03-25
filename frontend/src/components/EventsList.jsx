@@ -1,3 +1,4 @@
+import API_BASE_URL from '../config/api.js';
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -6,7 +7,7 @@ import AttendeeListModal from './AttendeeListModal.jsx';
 import GroupRegistrationModal from './GroupRegistrationModal.jsx';
 import Skeleton from './ui/Skeleton.jsx';
 
-const API_URL = 'http://localhost:5000/api/events';
+const API_URL = `${API_BASE_URL}/api/events`;
 
 const EventsList = () => {
   const [events, setEvents] = useState([]);
@@ -57,7 +58,7 @@ const EventsList = () => {
 
     try {
       const config = { headers: { Authorization: `Bearer ${userInfo.token}` } };
-      await axios.post(`http://localhost:5000/api/events/${eventId}/register`, {}, config);
+      await axios.post(`${API_BASE_URL}/api/events/${eventId}/register`, {}, config);
       setRegisterStatus(prev => ({ ...prev, [eventId]: 'Success!' }));
       fetchEvents();
     } catch (err) {
@@ -70,7 +71,7 @@ const EventsList = () => {
     if (!window.confirm('Are you sure you want to delete this event?')) return;
     try {
       const config = { headers: { Authorization: `Bearer ${userInfo.token}` } };
-      await axios.delete(`http://localhost:5000/api/events/${eventId}`, config);
+      await axios.delete(`${API_BASE_URL}/api/events/${eventId}`, config);
       setEvents(prev => prev.filter(event => event._id !== eventId));
     } catch (err) {
       alert(err.response?.data?.message || 'Failed to delete event');
@@ -79,7 +80,7 @@ const EventsList = () => {
 
   const handleToggleFeedback = async (id) => {
     try {
-      await axios.post(`http://localhost:5000/api/events/${id}/toggle-feedback`, {}, {
+      await axios.post(`${API_BASE_URL}/api/events/${id}/toggle-feedback`, {}, {
         headers: { Authorization: `Bearer ${userInfo.token}` }
       });
       fetchEvents();

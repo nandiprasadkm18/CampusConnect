@@ -1,3 +1,4 @@
+import API_BASE_URL from '../config/api.js';
 import React, { useState } from 'react';
 import axios from 'axios';
 import { motion } from 'framer-motion';
@@ -15,7 +16,7 @@ const Login = ({ onLogin }) => {
     setError(null);
 
     try {
-      const { data } = await axios.post('http://localhost:5000/api/auth/login', { email, password });
+      const { data } = await axios.post(`${API_BASE_URL}/api/auth/login`, { email, password });
       localStorage.setItem('user', JSON.stringify(data));
       onLogin(data);
     } catch (err) {

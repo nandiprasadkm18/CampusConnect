@@ -1,9 +1,10 @@
+import API_BASE_URL from '../config/api.js';
 import React, { useState } from 'react';
 import axios from 'axios';
 import { motion } from 'framer-motion';
 import { Type, AlignLeft, Calendar, MapPin, GraduationCap, PlusCircle, CheckCircle, Users, Image } from 'lucide-react';
 
-const API_URL = 'http://localhost:5000/api/events';
+const API_URL = `${API_BASE_URL}/api/events`;
 
 const branches = [
   { key: 'cse', name: 'Computer Science (CSE)' },
