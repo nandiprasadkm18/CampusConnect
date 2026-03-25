@@ -65,12 +65,6 @@ app.use((err, req, res, next) => {
 const httpServer = createServer(app);
 init(httpServer);
 
-// Start server (Only if not running in a serverless environment like Vercel)
-if (process.env.NODE_ENV !== 'production' || !process.env.VERCEL) {
-  const PORT = process.env.PORT || 5000;
-  httpServer.listen(PORT, () => {
-    console.log(`CampusConnect Engineering Core running on port ${PORT}`);
-  });
-}
+
 
 export default app;
