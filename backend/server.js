@@ -63,7 +63,10 @@ app.use((err, req, res, next) => {
 
 // Create HTTP server and integrate Socket.io
 const httpServer = createServer(app);
-init(httpServer);
+// Disable Socket.io in production/serverless environment
+if (process.env.NODE_ENV !== 'production' && !process.env.VERCEL) {
+  init(httpServer);
+}
 
 
 
