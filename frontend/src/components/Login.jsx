@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 import { Lock, Mail, ArrowRight } from 'lucide-react';
 
 const Login = ({ onLogin }) => {
-  const [email, setEmail] = useState('');
+  const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -16,7 +16,7 @@ const Login = ({ onLogin }) => {
     setError(null);
 
     try {
-      const { data } = await axios.post(`${API_BASE_URL}/api/auth/login`, { email, password });
+      const { data } = await axios.post(`${API_BASE_URL}/api/auth/login`, { identifier, password });
       localStorage.setItem('user', JSON.stringify(data));
       onLogin(data);
     } catch (err) {
@@ -48,15 +48,15 @@ const Login = ({ onLogin }) => {
         <div className="space-y-5">
           <div className="space-y-2">
             <label className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] pl-1 flex items-center gap-2">
-              <Mail className="w-3 h-3" /> Institutional Email
+              <Mail className="w-3 h-3" /> Email or Phone Number
             </label>
             <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              type="text"
+              value={identifier}
+              onChange={(e) => setIdentifier(e.target.value)}
               required
               className="w-full px-5 py-3.5 bg-slate-50 border border-slate-100 rounded-xl focus:bg-white focus:ring-4 focus:ring-indigo-50 outline-none transition-all text-slate-950 font-bold text-sm"
-              placeholder="email@college.edu"
+              placeholder="email@college.edu or +91..."
             />
           </div>
 

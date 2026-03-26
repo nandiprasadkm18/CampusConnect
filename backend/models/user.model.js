@@ -34,10 +34,29 @@ const userSchema = new mongoose.Schema(
       semester: { type: String, default: '' },
       phoneNumber: { type: String, default: '' },
     },
+    isEmailVerified: {
+      type: Boolean,
+      default: false,
+    },
+    isPhoneVerified: {
+      type: Boolean,
+      default: false,
+    },
+    emailOTP: {
+      type: String,
+    },
+    emailOTPExpires: {
+      type: Date,
+    },
+    phoneOTP: {
+      type: String,
+    },
+    phoneOTPExpires: {
+      type: Date,
+    },
   },
   { timestamps: true }
 );
-
 // Indexes for performance
 userSchema.index({ 'profile.branch': 1 });
 

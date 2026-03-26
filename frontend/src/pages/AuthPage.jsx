@@ -3,12 +3,15 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Login from '../components/Login.jsx';
 import Register from '../components/Register.jsx';
-import { Sparkles, ArrowRight, ArrowLeft } from 'lucide-react';
+import OTPVerification from '../components/OTPVerification.jsx';
+import { Sparkles, ArrowRight, ArrowLeft, ShieldCheck } from 'lucide-react';
 
 const AuthPage = ({ onLogin }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const [isSignIn, setIsSignIn] = useState(location.pathname === '/login');
+  const [isVerifying, setIsVerifying] = useState(false);
+  const [verificationType, setVerificationType] = useState('email');
 
   useEffect(() => {
     setIsSignIn(location.pathname === '/login');
@@ -16,7 +19,18 @@ const AuthPage = ({ onLogin }) => {
 
   const toggle = () => {
     const newPath = isSignIn ? '/register' : '/login';
+    setIsVerifying(false);
     navigate(newPath);
+  };
+
+  const handleRegisterSuccess = () => {
+    setIsVerifying(true);
+    setVerificationType('email');
+  };
+
+  const handleVerified = (updatedUser) => {
+    onLogin(updatedUser);
+    navigate('/');
   };
 
   return (
@@ -59,9 +73,16 @@ const AuthPage = ({ onLogin }) => {
                className="absolute top-0 left-0 w-full md:w-1/2 h-full flex flex-col items-center justify-center bg-white"
             >
               <div className="w-full h-full overflow-y-auto custom-scrollbar flex items-center justify-center py-10">
-                 <div className="w-full max-w-sm">
-                    <Register />
-                 </div>
+                <div className="w-full max-w-sm">
+                   {isVerifying ? (
+                     <OTPVerification 
+                        initialType={verificationType} 
+                        onVerified={handleVerified} 
+                     />
+                   ) : (
+                     <Register onRegisterSuccess={handleRegisterSuccess} />
+                   )}
+                </div>
               </div>
             </motion.div>
         </div>

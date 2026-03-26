@@ -2,7 +2,8 @@ import API_BASE_URL from '../config/api.js';
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { motion } from 'framer-motion';
-import { User, Mail, Lock, ShieldCheck, GraduationCap, Calendar, BookOpen, ArrowRight } from 'lucide-react';
+import { User, Mail, Lock, ShieldCheck, GraduationCap, Calendar, BookOpen, ArrowRight, Phone } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const API_URL = `${API_BASE_URL}/api/auth`;
 const branches = ['cse', 'ise', 'aiml', 'ec', 'eee', 'civil', 'mechanical'];
@@ -14,11 +15,13 @@ const semesterMap = {
   '4': ['7', '8'],
 };
 
-const Register = () => {
+const Register = ({ onRegisterSuccess }) => {
+  const navigate = useNavigate();
   const [userType, setUserType] = useState('student'); // 'student' or 'admin'
   const [formData, setFormData] = useState({
     fullName: '', username: '', email: '', password: '', confirmPassword: '',
     usn: '', branch: '', year: '', semester: '',
+    phoneNumber: '', // New
     secretCode: '' // New for admin
   });
   
@@ -55,8 +58,17 @@ const Register = () => {
         ...formData,
         role: userType // Pass the selected role
       };
-      await axios.post(`${API_URL}/register`, payload);
+      const { data } = await axios.post(`${API_URL}/register`, payload);
       setSuccess(`${userType === 'admin' ? 'Administrative' : 'Student'} identity established!`);
+      
+      // Auto-login after registration (if backend returns token)
+      if (data.token) {
+        localStorage.setItem('user', JSON.stringify(data));
+        // Inform AuthPage to show verification step
+        if (onRegisterSuccess) {
+          onRegisterSuccess();
+        }
+      }
     } catch (err) {
       setError(err.response?.data?.message || 'Synchronization failed');
     } finally {
@@ -160,11 +172,19 @@ const Register = () => {
           </>
         )}
 
-        <div className="space-y-2">
-          <label className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] pl-1 flex items-center gap-2 font-sans">
-            <Mail className="w-3 h-3" /> {userType === 'admin' ? 'Admin Email' : 'Institutional Email'}
-          </label>
-          <input name="email" type="email" value={formData.email} onChange={handleChange} required className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-xl focus:bg-white outline-none transition-all text-slate-950 font-bold text-xs" placeholder="admin@campus.edu" />
+        <div className="grid grid-cols-2 gap-4">
+          <div className="space-y-2">
+            <label className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] pl-1 flex items-center gap-2 font-sans">
+              <Mail className="w-3 h-3" /> {userType === 'admin' ? 'Admin Email' : 'Institutional Email'}
+            </label>
+            <input name="email" type="email" value={formData.email} onChange={handleChange} required className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-xl focus:bg-white outline-none transition-all text-slate-950 font-bold text-xs" placeholder="admin@campus.edu" />
+          </div>
+          <div className="space-y-2">
+            <label className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] pl-1 flex items-center gap-2 font-sans">
+              <ShieldCheck className="w-3 h-3" /> Phone Number
+            </label>
+            <input name="phoneNumber" type="tel" value={formData.phoneNumber} onChange={handleChange} required className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-xl focus:bg-white outline-none transition-all text-slate-950 font-bold text-xs" placeholder="+91 9876543210" />
+          </div>
         </div>
 
         {userType === 'admin' && (

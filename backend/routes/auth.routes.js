@@ -26,7 +26,8 @@ router.post('/register', authLimiter, async (req, res) => {
     year,
     semester,
     role,        // New: Accept role from client
-    secretCode   // New: Secret code for admin
+    secretCode,   // New: Secret code for admin
+    phoneNumber   // New: Phone number support
   } = req.body;
 
   const finalUsername = username || fullName || email.split('@')[0];
@@ -66,7 +67,8 @@ router.post('/register', authLimiter, async (req, res) => {
         usn: finalRole === 'admin' ? `ADM-${email.split('@')[0]}` : usn,
         branch: finalRole === 'admin' ? 'MANAGEMENT' : branch,
         year: finalRole === 'admin' ? 'N/A' : year,
-        semester: finalRole === 'admin' ? 'N/A' : semester
+        semester: finalRole === 'admin' ? 'N/A' : semester,
+        phoneNumber: phoneNumber || ''
       }
     });
     // --- END CHANGE ---
@@ -77,6 +79,8 @@ router.post('/register', authLimiter, async (req, res) => {
       email: user.email,
       role: user.role,
       profile: user.profile, // Send the full profile back
+      isEmailVerified: user.isEmailVerified,
+      isPhoneVerified: user.isPhoneVerified,
       token: generateToken(user._id),
     });
   } catch (error) {
@@ -87,9 +91,14 @@ router.post('/register', authLimiter, async (req, res) => {
 // @route   POST /api/auth/login
 // @desc    Authenticate user & get token
 router.post('/login', authLimiter, async (req, res) => {
-  const { email, password } = req.body;
+  const { identifier, password } = req.body; // identifier can be email or phoneNumber
   try {
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ 
+      $or: [
+        { email: identifier },
+        { 'profile.phoneNumber': identifier }
+      ]
+    });
     if (user && (await user.matchPassword(password))) {
       res.json({
         _id: user._id,
@@ -97,6 +106,8 @@ router.post('/login', authLimiter, async (req, res) => {
         email: user.email,
         role: user.role,
         profile: user.profile, // Send profile on login
+        isEmailVerified: user.isEmailVerified,
+        isPhoneVerified: user.isPhoneVerified,
         token: generateToken(user._id),
       });
     } else {

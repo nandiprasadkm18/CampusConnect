@@ -14,6 +14,7 @@ import workshopRoutes from './routes/workshop.routes.js';
 import userRoutes from './routes/user.routes.js';
 import analyticsRoutes from './routes/analytics.routes.js';
 import chatbotRoutes from './routes/chatbot.routes.js';
+import otpRoutes from './routes/otp.routes.js';
 
 // Load env variables
 dotenv.config();
@@ -51,6 +52,7 @@ app.use('/api/workshops', workshopRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/analytics', analyticsRoutes);
 app.use('/api/chatbot', chatbotRoutes);
+app.use('/api/otp', otpRoutes);
 
 // Error Handling Middleware
 app.use((err, req, res, next) => {
@@ -66,6 +68,13 @@ const httpServer = createServer(app);
 // Disable Socket.io in production/serverless environment
 if (process.env.NODE_ENV !== 'production' && !process.env.VERCEL) {
   init(httpServer);
+}
+
+const PORT = process.env.PORT || 5000;
+if (process.env.NODE_ENV !== 'production' && !process.env.VERCEL) {
+  httpServer.listen(PORT, () => {
+    console.log(`Server running in ${process.env.NODE_ENV || 'development'} mode on port ${PORT}`);
+  });
 }
 
 
