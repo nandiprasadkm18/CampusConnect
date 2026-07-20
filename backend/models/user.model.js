@@ -27,7 +27,7 @@ const userSchema = new mongoose.Schema(
     },
     // --- UPDATED THIS OBJECT ---
     profile: {
-      usn: { type: String, default: '', trim: true, unique: true }, // <-- ADDED
+      usn: { type: String, trim: true, unique: true, sparse: true }, // <-- ADDED sparse, removed default
       fullName: { type: String, default: '' },
       branch: { type: String, default: '' },
       year: { type: String, default: '' },

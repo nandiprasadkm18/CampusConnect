@@ -13,8 +13,10 @@ import userRoutes from './routes/user.routes.js'; // <-- 1. IMPORT
 // Load env variables
 dotenv.config();
 
-// Connect to database
-connectDB();
+// Connect to database and catch unhandled promise rejections
+connectDB().catch(err => {
+  console.error("Fatal: connectDB failed in server.js:", err.message);
+});
 
 const app = express();
 
