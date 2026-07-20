@@ -55,19 +55,20 @@ const attendeeCountStyle = {
   marginTop: '1rem',
 };
 const deleteButtonStyle = {
-  padding: '0.5rem 1rem',
-  fontSize: '0.9rem',
-  backgroundColor: 'black',
-  color: 'white',
-  border: 'none',
-  borderRadius: '8px',
+  padding: '0.4rem 0.8rem',
+  fontSize: '0.8rem',
+  backgroundColor: 'transparent',
+  color: 'var(--color-danger)',
+  border: '1px solid var(--color-danger)',
+  borderRadius: '6px',
   cursor: 'pointer',
   marginLeft: '1rem',
   fontWeight: 'bold',
   textTransform: 'uppercase',
   display: 'inline-flex',
   alignItems: 'center',
-  gap: '0.5rem',
+  gap: '0.4rem',
+  transition: 'all 0.2s ease',
 };
 // --- END STYLES ---
 
