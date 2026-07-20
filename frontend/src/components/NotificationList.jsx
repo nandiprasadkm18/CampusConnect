@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom'; 
 
-const USER_API_URL = 'http://localhost:5000/api/notifications';
-const ADMIN_API_URL = 'http://localhost:5000/api/notifications/admin/all';
+const USER_API_URL = '/api/notifications';
+const ADMIN_API_URL = '/api/notifications/admin/all';
 
 // --- NEW "EDUCROWN" STYLES ---
 const notifCardStyle = {

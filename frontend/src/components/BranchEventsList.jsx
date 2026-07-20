@@ -3,7 +3,7 @@ import axios from 'axios';
 import { Link } from 'react-router-dom';
 
 // ✅ Fixed API base URL
-const API_URL = 'http://localhost:5000/api/events/branch';
+const API_URL = '/api/events/branch';
 
 // --- Styles ---
 const eventCardStyle = {
@@ -87,7 +87,7 @@ const BranchEventsList = ({ branchName }) => {
     if (registerStatus[eventId]) return;
     try {
       const config = { headers: { Authorization: `Bearer ${userInfo.token}` } };
-      await axios.post(`http://localhost:5000/api/events/${eventId}/register`, {}, config);
+      await axios.post(`/api/events/${eventId}/register`, {}, config);
       setRegisterStatus((prev) => ({ ...prev, [eventId]: 'Registered!' }));
       fetchBranchEvents(); // Refresh list
     } catch (err) {

@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-const API_URL = 'http://localhost:5000/api/workshops/myworkshops'; // <-- CHANGED
-const FEEDBACK_URL = 'http://localhost:5000/api/workshops'; // <-- CHANGED
+const API_URL = '/api/workshops/myworkshops'; // <-- CHANGED
+const FEEDBACK_URL = '/api/workshops'; // <-- CHANGED
 
 // --- Styles (Identical to RegisteredEventsList) ---
 const eventCardStyle = {

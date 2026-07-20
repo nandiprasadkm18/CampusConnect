@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-const API_URL = 'http://localhost:5000/api/workshops'; // <-- CHANGED
+const API_URL = '/api/workshops'; // <-- CHANGED
 
 // --- Styles (Identical to EventsList) ---
 const eventCardStyle = {
@@ -67,7 +67,7 @@ const WorkshopList = () => { // <-- CHANGED
     if (registerStatus[workshopId]) return;
     try {
       const config = { headers: { Authorization: `Bearer ${userInfo.token}` } };
-      await axios.post(`http://localhost:5000/api/workshops/${workshopId}/register`, {}, config); // <-- CHANGED
+      await axios.post(`/api/workshops/${workshopId}/register`, {}, config); // <-- CHANGED
       setRegisterStatus(prev => ({ ...prev, [workshopId]: 'Registered!' }));
       fetchWorkshops(); 
     } catch (err) {

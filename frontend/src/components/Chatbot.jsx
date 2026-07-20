@@ -25,7 +25,7 @@ const Chatbot = () => {
                 const storedUser = JSON.parse(localStorage.getItem('user'));
                 if (storedUser && storedUser.token) {
                     const config = { headers: { Authorization: `Bearer ${storedUser.token}` } };
-                    const { data } = await axios.get('http://localhost:5000/api/events', config);
+                    const { data } = await axios.get('/api/events', config);
                     setAllEvents(data);
                 }
             } catch (error) {

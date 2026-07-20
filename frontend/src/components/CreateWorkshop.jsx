@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 
-const API_URL = 'http://localhost:5000/api/workshops';
+const API_URL = '/api/workshops';
 
 // --- Styles (Identical to CreateEvent) ---
 const formStyle = {

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-const API_URL_GET = 'http://localhost:5000/api/users/profile';
+const API_URL_GET = '/api/users/profile';
 
 // --- Styles ---
 const profileContainerStyle = {

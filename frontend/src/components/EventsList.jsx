@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
 // API URL now fetches ALL events
-const API_URL = 'http://localhost:5000/api/events';
+const API_URL = '/api/events';
 
 // --- Styles (no changes) ---
 const eventCardStyle = {
@@ -104,7 +104,7 @@ const EventsList = () => {
     if (registerStatus[eventId]) return;
     try {
       const config = { headers: { Authorization: `Bearer ${userInfo.token}` } };
-      await axios.post(`http://localhost:5000/api/events/${eventId}/register`, {}, config);
+      await axios.post(`/api/events/${eventId}/register`, {}, config);
       setRegisterStatus(prev => ({ ...prev, [eventId]: 'Registered!' }));
       fetchEvents(); // Refresh list to update count and button
     } catch (err) {
@@ -117,7 +117,7 @@ const EventsList = () => {
     if (!window.confirm('Are you sure you want to delete this event?')) return;
     try {
       const config = { headers: { Authorization: `Bearer ${userInfo.token}` } };
-      await axios.delete(`http://localhost:5000/api/events/${eventId}`, config);
+      await axios.delete(`/api/events/${eventId}`, config);
       setEvents(prev => prev.filter(event => event._id !== eventId));
       alert('Event deleted successfully');
     } catch (err) {
