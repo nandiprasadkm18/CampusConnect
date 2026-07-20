@@ -28,63 +28,69 @@ const titleStyle = {
   opacity: 0,
 };
 
+// Helper component for animated dashboard links
+const DashboardLink = ({ to, children, delay }) => (
+  <Link
+    to={to}
+    className="animate-slide-in-right hover-scale"
+    style={{
+      ...dashboardLinkStyle,
+      animationDelay: `${delay}s`
+    }}
+  >
+    {children}
+  </Link>
+);
+
 const HomePage = () => {
-  const [user, setUser] = useState(null); 
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
     if (storedUser) {
-      setUser(JSON.parse(storedUser)); 
+      setUser(JSON.parse(storedUser));
     }
   }, []);
 
   return (
     <div>
       <h1 style={titleStyle}>Welcome, {user ? user.username : 'User'}</h1>
-      <p style={{textAlign: 'center', color: 'var(--color-text-light)'}}>What would you like to do?</p>
-      
-      <div style={{marginTop: '3rem'}}>
-        
-        <Link 
-          to="/events" // This links to the "All Events" page
-          style={dashboardLinkStyle}
-          onMouseEnter={e => { e.target.style.boxShadow = '0 6px 16px rgba(0,0,0,0.1)'; e.target.style.color = 'var(--educrown-blue-light)'; }}
-          onMouseLeave={e => { e.target.style.boxShadow = '0 4px 12px rgba(0,0,0,0.05)'; e.target.style.color = 'var(--educrown-blue-dark)'; }}
-        >
+      <p style={{ textAlign: 'center', color: 'var(--color-text-light)' }}>What would you like to do?</p>
+
+      <div style={{ marginTop: '3rem' }}>
+
+        {/* Common Links */}
+        <DashboardLink to="/events" delay={0.1}>
           Browse All Events
-        </Link>
-        
-        {/* --- ADDED "BROWSE WORKSHOPS" LINK --- */}
-        <Link 
-          to="/workshops"
-          style={dashboardLinkStyle}
-          onMouseEnter={e => { e.target.style.boxShadow = '0 6px 16px rgba(0,0,0,0.1)'; e.target.style.color = 'var(--educrown-blue-light)'; }}
-          onMouseLeave={e => { e.target.style.boxShadow = '0 4px 12px rgba(0,0,0,0.05)'; e.target.style.color = 'var(--educrown-blue-dark)'; }}
-        >
+        </DashboardLink>
+
+        <DashboardLink to="/workshops" delay={0.2}>
           Browse All Workshops
-        </Link>
-        
-        {/* These links will only show for standard users */}
+        </DashboardLink>
+
+        {/* --- ADMIN SPECIFIC LINKS --- */}
+        {user && user.role === 'admin' && (
+          <>
+            <DashboardLink to="/create-event" delay={0.3}>
+              + Add New Event
+            </DashboardLink>
+
+            <DashboardLink to="/create-workshop" delay={0.4}>
+              + Add New Workshop
+            </DashboardLink>
+          </>
+        )}
+
+        {/* --- STUDENT SPECIFIC LINKS --- */}
         {user && user.role === 'user' && (
           <>
-            <Link 
-              to="/my-events"
-              style={dashboardLinkStyle}
-              onMouseEnter={e => { e.target.style.boxShadow = '0 6px 16px rgba(0,0,0,0.1)'; e.target.style.color = 'var(--educrown-blue-light)'; }}
-              onMouseLeave={e => { e.target.style.boxShadow = '0 4px 12px rgba(0,0,0,0.05)'; e.target.style.color = 'var(--educrown-blue-dark)'; }}
-            >
+            <DashboardLink to="/my-events" delay={0.3}>
               View My Registered Events
-            </Link>
+            </DashboardLink>
 
-            {/* --- ADDED "MY WORKSHOPS" LINK (as in your screenshot) --- */}
-            <Link 
-              to="/my-workshops"
-              style={dashboardLinkStyle}
-              onMouseEnter={e => { e.target.style.boxShadow = '0 6px 16px rgba(0,0,0,0.1)'; e.target.style.color = 'var(--educrown-blue-light)'; }}
-              onMouseLeave={e => { e.target.style.boxShadow = '0 4px 12px rgba(0,0,0,0.05)'; e.target.style.color = 'var(--educrown-blue-dark)'; }}
-            >
+            <DashboardLink to="/my-workshops" delay={0.4}>
               View My Registered Workshops
-            </Link>
+            </DashboardLink>
           </>
         )}
       </div>

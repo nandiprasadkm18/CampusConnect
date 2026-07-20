@@ -18,7 +18,7 @@ const titleStyle = {
   textTransform: 'uppercase',
   fontSize: '3.5rem',
   marginBottom: '2rem',
-  animation: 'none', // Remove glitch
+  animation: 'none',
 };
 
 const formContainerStyle = {
@@ -26,12 +26,11 @@ const formContainerStyle = {
   padding: '2rem',
   borderRadius: '8px',
   backgroundColor: 'var(--color-bg-white)',
-  width: '350px',
+  width: '500px', 
   maxWidth: '90%',
-  boxShadow: '0 4px 12px rgba(0,0,0,0.05)', // Softer shadow
-
+  boxShadow: '0 4px 12px rgba(0,0,0,0.05)', 
   opacity: 0, 
-  animation: 'fadeInUp 0.6s ease-out 0.2s forwards', // Keep the clean fade-in
+  animation: 'fadeInUp 0.6s ease-out 0.2s forwards', 
 };
 
 const switchLinkStyle = {
@@ -53,13 +52,10 @@ const LoginPage = ({ onLogin }) => {
       </div>
 
       <Link to="/register" style={switchLinkStyle}>
-        New user? Register
+        Don't have an account? Register
       </Link>
     </div>
   );
 };
 
 export default LoginPage;
-
-
-

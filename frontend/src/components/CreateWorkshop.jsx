@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 
-const API_URL = 'http://localhost:5000/api/workshops'; // <-- CHANGED
+const API_URL = 'http://localhost:5000/api/workshops';
 
 // --- Styles (Identical to CreateEvent) ---
 const formStyle = {
@@ -55,7 +55,7 @@ const branches = [
   { key: 'general', name: 'General / All-College' }
 ];
 
-const CreateWorkshop = () => { // <-- CHANGED
+const CreateWorkshop = () => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [date, setDate] = useState('');
@@ -65,6 +65,9 @@ const CreateWorkshop = () => { // <-- CHANGED
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
 
+  // --- 1. GET TODAY'S DATE ---
+  const today = new Date().toISOString().split('T')[0];
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
@@ -73,7 +76,7 @@ const CreateWorkshop = () => { // <-- CHANGED
     try {
       const userInfo = JSON.parse(localStorage.getItem('user'));
       if (!userInfo || !userInfo.token) {
-        setError('You must be logged in to create a workshop.'); // <-- CHANGED
+        setError('You must be logged in to create a workshop.');
         return;
       }
       const config = { headers: { Authorization: `Bearer ${userInfo.token}` } };
@@ -82,8 +85,8 @@ const CreateWorkshop = () => { // <-- CHANGED
       
       const { data } = await axios.post(API_URL, payload, config);
 
-      console.log('Workshop created:', data); // <-- CHANGED
-      setSuccess('Workshop created successfully!'); // <-- CHANGED
+      console.log('Workshop created:', data);
+      setSuccess('Workshop created successfully!');
       
       setTitle('');
       setDescription('');
@@ -92,24 +95,24 @@ const CreateWorkshop = () => { // <-- CHANGED
       setBranch('general');
     } catch (err) {
       console.error(err);
-      setError(err.response?.data?.message || 'Workshop creation failed'); // <-- CHANGED
+      setError(err.response?.data?.message || 'Workshop creation failed');
     }
   };
 
   return (
     <form onSubmit={handleSubmit} style={formStyle}>
-      <h2 style={{textAlign: 'center', color: 'var(--educrown-blue-dark)'}}>Create New Workshop</h2> {/* <-- CHANGED */}
+      <h2 style={{textAlign: 'center', color: 'var(--educrown-blue-dark)'}}>Create New Workshop</h2>
       {error && <p style={{ color: 'var(--color-danger)' }}>{error}</p>}
       {success && <p style={{ color: 'var(--color-success)' }}>{success}</p>}
       
       <div>
-        <label style={labelStyle}>Workshop Title:</label> {/* <-- CHANGED */}
-        <input style={inputStyle} type="text" value={title} onChange={(e) => setTitle(e.target.value)} />
+        <label style={labelStyle}>Workshop Title:</label>
+        <input style={inputStyle} type="text" value={title} onChange={(e) => setTitle(e.target.value)} required />
       </div>
       
       <div>
         <label style={labelStyle}>Branch:</label>
-        <select style={inputStyle} value={branch} onChange={(e) => setBranch(e.target.value)}>
+        <select style={inputStyle} value={branch} onChange={(e) => setBranch(e.target.value)} required>
           {branches.map(b => (
             <option key={b.key} value={b.key}>{b.name}</option>
           ))}
@@ -118,24 +121,32 @@ const CreateWorkshop = () => { // <-- CHANGED
       
       <div>
         <label style={labelStyle}>Description:</label>
-        <textarea style={{...inputStyle, height: '100px'}} value={description} onChange={(e) => setDescription(e.target.value)} />
+        <textarea style={{...inputStyle, height: '100px'}} value={description} onChange={(e) => setDescription(e.target.value)} required />
       </div>
 
       <div>
         <label style={labelStyle}>Date:</label>
-        <input style={inputStyle} type="date" value={date} onChange={(e) => setDate(e.target.value)} />
+        {/* --- 2. APPLY MIN ATTRIBUTE --- */}
+        <input 
+          style={inputStyle} 
+          type="date" 
+          value={date} 
+          min={today} 
+          onChange={(e) => setDate(e.target.value)} 
+          required 
+        />
       </div>
 
       <div>
         <label style={labelStyle}>Location:</label>
-        <input style={inputStyle} type="text" value={location} onChange={(e) => setLocation(e.target.value)} />
+        <input style={inputStyle} type="text" value={location} onChange={(e) => setLocation(e.target.value)} required />
       </div>
 
       <button type="submit" style={buttonStyle}>
-        Create Workshop {/* <-- CHANGED */}
+        Create Workshop
       </button>
     </form>
   );
 };
 
-export default CreateWorkshop; // <-- CHANGED
+export default CreateWorkshop;

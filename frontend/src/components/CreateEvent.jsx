@@ -3,7 +3,7 @@ import axios from 'axios';
 
 const API_URL = 'http://localhost:5000/api/events';
 
-// --- NEW "EDUCROWN" STYLES ---
+// --- "EDUCROWN" STYLES ---
 const formStyle = {
   display: 'flex',
   flexDirection: 'column',
@@ -80,6 +80,8 @@ const CreateEvent = () => {
       
       const payload = { title, description, date, location, branch };
       
+      console.log("Sending Event Data:", payload); // Debugging line
+
       const { data } = await axios.post(API_URL, payload, config);
 
       console.log('Event created:', data);
@@ -91,7 +93,7 @@ const CreateEvent = () => {
       setLocation('');
       setBranch('general');
     } catch (err) {
-      console.error(err);
+      console.error("Event Creation Error:", err); // Debugging line
       setError(err.response?.data?.message || 'Event creation failed');
     }
   };
@@ -104,12 +106,12 @@ const CreateEvent = () => {
       
       <div>
         <label style={labelStyle}>Event Title:</label>
-        <input style={inputStyle} type="text" value={title} onChange={(e) => setTitle(e.target.value)} />
+        <input style={inputStyle} type="text" value={title} onChange={(e) => setTitle(e.target.value)} required />
       </div>
       
       <div>
         <label style={labelStyle}>Branch:</label>
-        <select style={inputStyle} value={branch} onChange={(e) => setBranch(e.target.value)}>
+        <select style={inputStyle} value={branch} onChange={(e) => setBranch(e.target.value)} required>
           {branches.map(b => (
             <option key={b.key} value={b.key}>{b.name}</option>
           ))}
@@ -118,17 +120,23 @@ const CreateEvent = () => {
       
       <div>
         <label style={labelStyle}>Description:</label>
-        <textarea style={{...inputStyle, height: '100px'}} value={description} onChange={(e) => setDescription(e.target.value)} />
+        <textarea style={{...inputStyle, height: '100px'}} value={description} onChange={(e) => setDescription(e.target.value)} required />
       </div>
 
       <div>
         <label style={labelStyle}>Date:</label>
-        <input style={inputStyle} type="date" value={date} onChange={(e) => setDate(e.target.value)} />
+        <input 
+          style={inputStyle} 
+          type="date" 
+          value={date} 
+          onChange={(e) => setDate(e.target.value)} 
+          required 
+        />
       </div>
 
       <div>
         <label style={labelStyle}>Location:</label>
-        <input style={inputStyle} type="text" value={location} onChange={(e) => setLocation(e.target.value)} />
+        <input style={inputStyle} type="text" value={location} onChange={(e) => setLocation(e.target.value)} required />
       </div>
 
       <button type="submit" style={buttonStyle}>

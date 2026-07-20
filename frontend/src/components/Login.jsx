@@ -3,7 +3,6 @@ import axios from 'axios';
 
 const API_URL = 'http://localhost:5000/api/auth';
 
-// --- NEW "EDUCROWN" STYLES ---
 const formStyle = {
   display: 'flex',
   flexDirection: 'column',
@@ -13,9 +12,9 @@ const formStyle = {
 const inputStyle = {
   padding: '0.75rem',
   fontSize: '1rem',
-  backgroundColor: 'var(--color-bg-light)', // Light grey background
-  border: '1px solid var(--color-border)', // Light border
-  color: 'var(--color-text-dark)', // Dark text
+  backgroundColor: 'var(--color-bg-light)', 
+  border: '1px solid var(--color-border)', 
+  color: 'var(--color-text-dark)', 
   borderRadius: '4px',
   fontFamily: "inherit",
   width: '100%', 
@@ -24,9 +23,9 @@ const inputStyle = {
 const buttonStyle = {
   padding: '0.75rem',
   fontSize: '1rem',
-  backgroundColor: 'var(--educrown-blue-light)', // Use theme color
+  backgroundColor: 'var(--educrown-blue-light)',
   color: 'var(--color-bg-white)',
-  border: 'none', // Buttons are solid
+  border: 'none', 
   fontFamily: "inherit",
   marginTop: '1rem',
   cursor: 'pointer',
@@ -35,16 +34,15 @@ const buttonStyle = {
   fontWeight: 'bold',
 };
 const labelStyle = {
-  color: 'var(--color-text-light)', // Lighter text
+  color: 'var(--color-text-light)', 
   textTransform: 'uppercase',
   fontSize: '0.9rem',
   display: 'block', 
   marginBottom: '0.5rem', 
   fontWeight: '600',
 };
-// --- END STYLES ---
 
-const Login = ({ onLogin }) => { 
+const Login = ({ onLogin }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
@@ -57,7 +55,7 @@ const Login = ({ onLogin }) => {
         email,
         password,
       });
-      onLogin(data); 
+      onLogin(data);
     } catch (err) {
       console.error(err);
       setError(err.response?.data?.message || 'Login failed');
@@ -79,7 +77,7 @@ const Login = ({ onLogin }) => {
           required
         />
       </div>
-      
+
       <div>
         <label style={labelStyle}>Password:</label>
         <input
